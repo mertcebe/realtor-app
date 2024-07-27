@@ -11,7 +11,7 @@ import Header from '../components/Header';
 
 const AppRouter = () => {
   return (
-    <div>
+    <div className='w-full h-screen bg-slate-50'>
         <BrowserRouter>
             <Header />
             <Routes>
