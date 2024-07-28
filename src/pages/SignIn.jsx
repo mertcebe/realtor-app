@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom'
 import { FaRegEye } from "react-icons/fa";
 import { FaRegEyeSlash } from "react-icons/fa";
 import OAuth from '../components/OAuth';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '../firebase/firebaseConfig';
 
 const SignIn = () => {
   let [formData, setFormData] = useState({
@@ -20,9 +22,10 @@ const SignIn = () => {
     });
   }
 
-  const submitFunc = (e) => {
+  const submitFunc = async (e) => {
     e.preventDefault();
-    console.log(formData);
+    const userCredentials = await signInWithEmailAndPassword(auth, email, password);
+    console.log(auth.currentUser);
   }
 
   return (
