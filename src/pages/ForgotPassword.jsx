@@ -1,6 +1,9 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import OAuth from '../components/OAuth';
+import { sendPasswordResetEmail } from 'firebase/auth';
+import { auth } from '../firebase/firebaseConfig';
+import { toast } from 'react-toastify';
 
 const ForgotPassword = () => {
   let [email, setEmail] = useState('');
@@ -9,8 +12,10 @@ const ForgotPassword = () => {
     setEmail(e.target.value);
   }
 
-  const submitFunc = (e) => {
+  const submitFunc = async (e) => {
     e.preventDefault();
+    await sendPasswordResetEmail(auth, email);
+    toast.success('Reset email sent');
     console.log(email);
   }
 

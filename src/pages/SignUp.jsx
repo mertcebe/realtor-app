@@ -1,10 +1,12 @@
 import React, { useState } from 'react'
-import { Link, redirect } from 'react-router-dom'
+import { Link, redirect, useNavigate } from 'react-router-dom'
 import { FaRegEye } from "react-icons/fa";
 import { FaRegEyeSlash } from "react-icons/fa";
 import OAuth from '../components/OAuth';
 import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
-import { auth } from '../firebase/firebaseConfig';
+import database, { auth } from '../firebase/firebaseConfig';
+import { addDoc, collection, doc, serverTimestamp, setDoc } from 'firebase/firestore';
+import { toast } from 'react-toastify';
 
 const SignUp = () => {
   let [formData, setFormData] = useState({
@@ -14,6 +16,8 @@ const SignUp = () => {
   });
   const { fullName, email, password } = formData;
   const [showPassword, setShowPassword] = useState(false);
+  const [btnControl, setBtnControl] = useState(false);
+  const navigate = useNavigate();
 
   const onChange = (e) => {
     setFormData(prev => {
@@ -25,12 +29,20 @@ const SignUp = () => {
 
   const submitFunc = async (e) => {
     e.preventDefault();
+    setBtnControl(true);
     const userCredentials = await createUserWithEmailAndPassword(auth, email, password);
     await updateProfile(auth.currentUser, {
       displayName: fullName
     });
     const user = userCredentials.user;
-    console.log(user);
+    const formDataCopy = { ...formData };
+    delete formDataCopy.password;
+    formDataCopy.timestamp = serverTimestamp();
+
+    await setDoc(doc(database, 'users', user.uid), formDataCopy);
+    navigate('/');
+    setBtnControl(false);
+    toast.success('Successfully signed up!');
   }
 
   return (
@@ -42,7 +54,7 @@ const SignUp = () => {
         </div>
         <div className='w-full md:w-[67%] lg:w-[40%] lg:ml-20'>
           <form>
-            <input type="text" id='name' className='w-full bg-white border-2 mb-4 h-12 p-2' defaultValue={fullName} onChange={onChange} placeholder='Full name' />
+            <input type="text" id='fullName' className='w-full bg-white border-2 mb-4 h-12 p-2' defaultValue={fullName} onChange={onChange} placeholder='Full name' />
             <input type="email" id='email' className='w-full bg-white border-2 mb-4 h-12 p-2' defaultValue={email} onChange={onChange} placeholder='Email address' />
             <div className='relative'>
               <input type={showPassword ? 'text':'password'} id='password' className='w-full bg-white border-2 h-12 p-2' defaultValue={password} onChange={onChange} placeholder='Password' />
@@ -59,12 +71,12 @@ const SignUp = () => {
               <p className='p-0 m-0 font-semibold'>Already have an account? <Link to={'/sign-in'} className='text-red-700'>Sign in</Link></p>
               <Link to={'/forgot-password'} className='text-blue-600 font-semibold'>Forgot Password?</Link>
             </div>
-            <button className='w-full text-white bg-blue-600 font-semibold py-3 text-sm hover:bg-blue-700' onClick={submitFunc}>SIGN UP</button>
+            <button className='w-full text-white bg-blue-600 font-semibold py-3 text-sm hover:bg-blue-700' onClick={submitFunc} disabled={btnControl}>SIGN UP</button>
             <div className='relative my-6'>
               <span className='absolute left-2/4 -top-3 -translate-x-1/2 bg-slate-50 px-4'>OR</span>
               <hr />
             </div>
-            <OAuth />
+            <OAuth disabled={btnControl} />
           </form>
         </div>
       </div>

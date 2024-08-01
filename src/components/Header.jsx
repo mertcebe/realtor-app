@@ -1,7 +1,7 @@
 import React from 'react'
 import { Link, useLocation } from 'react-router-dom'
 
-const Header = () => {
+const Header = ({isAuthorized}) => {
     const location = useLocation();
     const pathMathRoute = (route) => {
         if(route == location.pathname){
@@ -17,7 +17,12 @@ const Header = () => {
             <div className='flex'>
                 <Link to="/" className={`flex items-center font-bold text-sm mr-10 text-gray-400 hover:text-gray-700 transition-all ${pathMathRoute('/')&&'text-gray-950 border-b-2 border-b-red-600'}`}>Home</Link>
                 <Link to={"/offers"} className={`flex items-center font-bold text-sm mr-10 text-gray-400 hover:text-gray-700 transition-all ${pathMathRoute('/offers')&&'text-gray-950 border-b-2 border-b-red-600'}`}>Offers</Link>
-                <Link to={"/sign-in"} className={`flex items-center font-bold text-sm text-gray-400 hover:text-gray-700 transition-all ${pathMathRoute('/sign-in')&&'text-gray-950 border-b-2 border-b-red-600'}`}>Sign in</Link>
+                {
+                    isAuthorized?
+                    <Link to={"/profile"} className={`flex items-center font-bold text-sm text-gray-400 hover:text-gray-700 transition-all ${pathMathRoute('/profile')&&'text-gray-950 border-b-2 border-b-red-600'}`}>Profile</Link>
+                    :
+                    <Link to={"/sign-in"} className={`flex items-center font-bold text-sm text-gray-400 hover:text-gray-700 transition-all ${pathMathRoute('/sign-in')&&'text-gray-950 border-b-2 border-b-red-600'}`}>Sign in</Link>
+                }
             </div>
         </div>
     )

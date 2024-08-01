@@ -8,22 +8,43 @@ import SignUp from '../pages/SignUp';
 import ForgotPassword from '../pages/ForgotPassword';
 import Offers from '../pages/Offers';
 import Header from '../components/Header';
+import { ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css';
+import PrivateRoute from '../routes/PrivateRoute';
+import PublicRoute from '../routes/PublicRoute';
+import useAuthorized from '../useAuth/useAuthorized';
 
 const AppRouter = () => {
+  const {isAuthorized, loading} = useAuthorized();
   return (
     <div className='w-full h-screen bg-slate-50'>
-        <BrowserRouter>
-            <Header />
-            <Routes>
-                <Route path='/' element={<Home />} />
-                <Route path='/sign-in' element={<SignIn />} />
-                <Route path='/sign-up' element={<SignUp />} />
-                <Route path='/profile' element={<Profile />} />
-                <Route path='/forgot-password' element={<ForgotPassword />} />
-                <Route path='/offers' element={<Offers />} />
-            </Routes>
-        </BrowserRouter>
-
+      <BrowserRouter>
+        <Header isAuthorized={isAuthorized} />
+        <Routes>
+          <Route element={<PrivateRoute isAuthorized={isAuthorized} />}>
+            <Route path='/' element={<Home />} />
+            <Route path='/offers' element={<Offers />} />
+            <Route path='/profile' element={<Profile />} />
+          </Route>
+          <Route element={<PublicRoute isAuthorized={isAuthorized} />}>
+          <Route path='/sign-in' element={<SignIn />} />
+          <Route path='/sign-up' element={<SignUp />} />
+          <Route path='/forgot-password' element={<ForgotPassword />} />
+          </Route>
+        </Routes>
+      </BrowserRouter>
+      <ToastContainer
+        position="bottom-center"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="dark"
+      />
     </div>
   )
 }

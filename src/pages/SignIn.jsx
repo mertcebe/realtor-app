@@ -1,10 +1,11 @@
 import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { FaRegEye } from "react-icons/fa";
 import { FaRegEyeSlash } from "react-icons/fa";
 import OAuth from '../components/OAuth';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../firebase/firebaseConfig';
+import { toast } from 'react-toastify';
 
 const SignIn = () => {
   let [formData, setFormData] = useState({
@@ -13,19 +14,17 @@ const SignIn = () => {
   });
   const { email, password } = formData;
   const [showPassword, setShowPassword] = useState(false);
+  const navigate = useNavigate();
 
   const onChange = (e) => {
-    setFormData(prev => {
-      return (
-        {...prev, [e.target.id]: e.target.value}
-      )
-    });
+    setFormData(prev => ({ ...prev, [e.target.id]: e.target.value }));
   }
 
   const submitFunc = async (e) => {
     e.preventDefault();
     const userCredentials = await signInWithEmailAndPassword(auth, email, password);
-    console.log(auth.currentUser);
+    toast.success('Successfully signed in!');
+    navigate('/');
   }
 
   return (
@@ -39,13 +38,13 @@ const SignIn = () => {
           <form>
             <input type="email" id='email' className='w-full bg-white border-2 mb-4 h-12 p-2' defaultValue={email} onChange={onChange} placeholder='Email address' />
             <div className='relative'>
-              <input type={showPassword ? 'text':'password'} id='password' className='w-full bg-white border-2 h-12 p-2' defaultValue={password} onChange={onChange} placeholder='Password' />
-              <div className='absolute right-1 top-1/2 -translate-y-1/2 p-2 rounded-full hover:bg-gray-200 transition-all cursor-pointer' onClick={() => {setShowPassword(!showPassword)}}>
+              <input type={showPassword ? 'text' : 'password'} id='password' className='w-full bg-white border-2 h-12 p-2' defaultValue={password} onChange={onChange} placeholder='Password' />
+              <div className='absolute right-1 top-1/2 -translate-y-1/2 p-2 rounded-full hover:bg-gray-200 transition-all cursor-pointer' onClick={() => { setShowPassword(!showPassword) }}>
                 {
-                showPassword?
-                <FaRegEye className='text-xl' />
-                :
-                <FaRegEyeSlash className='text-xl' />
+                  showPassword ?
+                    <FaRegEye className='text-xl' />
+                    :
+                    <FaRegEyeSlash className='text-xl' />
                 }
               </div>
             </div>
