@@ -6,7 +6,7 @@ const PublicRoute = ({ isAuthorized }) => {
         <>
             {
                 isAuthorized ?
-                    <Navigate to={'/sign-in'} />
+                    <Navigate to={'/'} />
                     :
                     <Outlet />
             }

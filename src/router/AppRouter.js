@@ -13,23 +13,24 @@ import 'react-toastify/dist/ReactToastify.css';
 import PrivateRoute from '../routes/PrivateRoute';
 import PublicRoute from '../routes/PublicRoute';
 import useAuthorized from '../useAuth/useAuthorized';
+import Spinner from '../components/Spinner';
 
 const AppRouter = () => {
-  const {isAuthorized, loading} = useAuthorized();
+  const { isAuthorized, loading } = useAuthorized();
   return (
     <div className='w-full h-screen bg-slate-50'>
       <BrowserRouter>
         <Header isAuthorized={isAuthorized} />
         <Routes>
+          <Route path='/' element={<Home />} />
+          <Route path='/offers' element={<Offers />} />
           <Route element={<PrivateRoute isAuthorized={isAuthorized} />}>
-            <Route path='/' element={<Home />} />
-            <Route path='/offers' element={<Offers />} />
             <Route path='/profile' element={<Profile />} />
           </Route>
           <Route element={<PublicRoute isAuthorized={isAuthorized} />}>
-          <Route path='/sign-in' element={<SignIn />} />
-          <Route path='/sign-up' element={<SignUp />} />
-          <Route path='/forgot-password' element={<ForgotPassword />} />
+            <Route path='/sign-in' element={<SignIn />} />
+            <Route path='/sign-up' element={<SignUp />} />
+            <Route path='/forgot-password' element={<ForgotPassword />} />
           </Route>
         </Routes>
       </BrowserRouter>

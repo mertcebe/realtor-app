@@ -4,7 +4,7 @@ import { auth } from '../firebase/firebaseConfig';
 
 const useAuthorized = () => {
     let [isAuthorized, setIsAuthorized] = useState();
-    let [loading, setLoading] = useState(false);
+    let [loading, setLoading] = useState(true);
     onAuthStateChanged(auth, (user) => {
         if (user) {
             setIsAuthorized(true);
@@ -12,7 +12,7 @@ const useAuthorized = () => {
         else {
             setIsAuthorized(false);
         }
-        setLoading(true);
+            setLoading(false);
     })
     return { isAuthorized, loading }
 }
